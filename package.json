@@ -1,0 +1,33 @@
+{
+  "name": "gjs-pointer-tracker",
+  "license": "GPL-3.0-or-later",
+  "author": "Johannes Garz <johannes@garz.dev> (https://garz.dev/)",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc && cp -r metadata.json schemas pointer-tracker@garz.dev && glib-compile-schemas pointer-tracker@garz.dev/schemas",
+    "disable": "rm -rf ~/.local/share/gnome-shell/extensions/pointer-tracker@garz.dev",
+    "enable": "yarn disable && yarn build && cp -r pointer-tracker@garz.dev ~/.local/share/gnome-shell/extensions/",
+    "test": "yarn enable && env WAYLAND_DISPLAY=wayland-1 G_MESSAGES_DEBUG='GNOME Shell' MUTTER_DEBUG_DUMMY_MODE_SPECS=2048x1536 dbus-run-session -- gnome-shell --nested --wayland",
+    "ncu": "ncu -u",
+    "lint": "prettier --check . && eslint",
+    "format": "prettier -w . && eslint --fix"
+  },
+  "sideEffects": "false",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "npm-check-updates": "^17.1.11",
+    "prettier": "^3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@girs/gjs": "^4.0.0-beta.19",
+    "@girs/gnome-shell": "^47.0.0"
+  }
+}

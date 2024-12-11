@@ -1,0 +1,10 @@
+{
+  "name": "Pointer Tracker",
+  "version-name": "0.0.1",
+  "description": "Highlight the mouse cursor to make it visible on screencasts",
+  "url": "https://github.com/garzj/gjs-pointer-tracker",
+  "uuid": "pointer-tracker@garz.dev",
+  "shell-version": ["47"],
+  "gettext-domain": "pointer-tracker@garz.dev",
+  "settings-schema": "org.gnome.shell.extensions.pointer-tracker"
+}

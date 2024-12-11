@@ -1,0 +1,8 @@
+<!DOCTYPE xml>
+<schemalist gettext-domain='pointer-tracker@garz.dev'>
+
+  <!-- Settings -->
+
+  <schema id='org.gnome.shell.extensions.pointer-tracker'
+    path='/org/gnome/shell/extensions/pointer-tracker/'></schema>
+</schemalist>

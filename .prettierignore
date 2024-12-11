@@ -1,0 +1,10 @@
+# Build
+pointer-tracker@garz.dev/
+
+# Deps
+node_modules/
+.pnp
+.pnp.js
+
+# IDEs
+.idea/
