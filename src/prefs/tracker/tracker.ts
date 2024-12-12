@@ -5,6 +5,7 @@ import {
   gettext as _,
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { KeybindingRow } from '../keybinding.js';
+import { AboutRow } from './about.js';
 import { makeActiveRow } from './active.js';
 import { makeCircleRows } from './circle.js';
 import { makeShapeRow } from './shape.js';
@@ -51,6 +52,15 @@ export const TrackerPage = GObject.registerClass(
       );
       keybindingGroup.set_header_suffix(keybindRow.resetButton);
       keybindingGroup.add(keybindRow);
+
+      const adwVersion = parseFloat(Adw.VERSION_S.substring(0, 3));
+      if (adwVersion >= 1.5) {
+        const aboutGroup = new Adw.PreferencesGroup({ title: _('About') });
+        this.add(aboutGroup);
+
+        const aboutRow = new AboutRow(prefs.metadata);
+        aboutGroup.add(aboutRow);
+      }
     }
   },
 );
