@@ -6,7 +6,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc && cp -r metadata.json schemas pointer-tracker@garz.dev && glib-compile-schemas pointer-tracker@garz.dev/schemas",
-    "zip": "yarn build && zip -r pointer-tracker@garz.dev.zip pointer-tracker@garz.dev",
+    "zip": "yarn build && cd pointer-tracker@garz.dev && zip -r ../pointer-tracker@garz.dev.zip .",
     "disable": "rm -rf ~/.local/share/gnome-shell/extensions/pointer-tracker@garz.dev",
     "enable": "yarn disable && yarn build && cp -r pointer-tracker@garz.dev ~/.local/share/gnome-shell/extensions/",
     "test": "yarn enable && env WAYLAND_DISPLAY=wayland-1 G_MESSAGES_DEBUG='GNOME Shell' MUTTER_DEBUG_DUMMY_MODE_SPECS=2048x1536 dbus-run-session -- gnome-shell --nested --wayland",
