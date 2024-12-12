@@ -30,5 +30,19 @@ export function makeCircleRows(settings: Gio.Settings): Gtk.Widget[] {
   colorBox.append(colorPicker);
   colorRow.add_suffix(colorBox);
 
-  return [sizeRow, colorRow];
+  const opacityRow = new Adw.SpinRow({
+    title: _('Opacity'),
+    subtitle: _('Opacity of the tracker'),
+    adjustment: new Gtk.Adjustment({
+      lower: 0,
+      upper: 100,
+      step_increment: 10,
+    }),
+    value: settings.get_int('tracker-opacity'),
+  });
+  opacityRow.adjustment.connect('value-changed', (widget) => {
+    settings.set_int('tracker-opacity', widget.value);
+  });
+
+  return [sizeRow, colorRow, opacityRow];
 }

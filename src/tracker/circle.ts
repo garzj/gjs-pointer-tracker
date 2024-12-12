@@ -29,5 +29,12 @@ export function makeCircle(settingsSub: SettingsSubscriber) {
   settingsSub.connect('changed::tracker-color', updateColor);
   updateColor();
 
+  function updateOpacity() {
+    const opacitySetting = settingsSub.settings.get_int('tracker-opacity');
+    circle.opacity = Math.ceil(opacitySetting * 2.55);
+  }
+  settingsSub.connect('changed::tracker-opacity', updateOpacity);
+  updateOpacity();
+
   return circle;
 }

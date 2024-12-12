@@ -28,7 +28,5 @@ export function makeTracker(settingsSub: SettingsSubscriber) {
   settingsSub.connect('changed::tracker-shape', updateShape);
   updateShape();
 
-  tracker.opacity = 128;
-
   return tracker;
 }

@@ -32,5 +32,11 @@
       <summary>Color of the tracker</summary>
       <description>Sets the color of the tracker.</description>
     </key>
+
+    <key name='tracker-opacity' type='i'>
+      <default>50</default>
+      <summary>Opacity of the tracker</summary>
+      <description>Sets the opacity of the tracker from 0 (transparent) to 100 (opaque).</description>
+    </key>
   </schema>
 </schemalist>
