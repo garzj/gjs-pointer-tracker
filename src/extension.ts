@@ -1,5 +1,3 @@
-'use strict';
-
 import Gio from 'gi://Gio';
 import St from 'gi://St';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
