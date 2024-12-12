@@ -1,18 +1,33 @@
-import { makeWidget, setStyles } from '../gjs/widget.js';
+import { makeWidget, setStyles, Styles } from '../gjs/widget.js';
+import { SettingsSubscriber } from '../prefs/subscriber.js';
 
-export function makeCircle() {
+export function makeCircle(settingsSub: SettingsSubscriber) {
   const circle = makeWidget();
 
-  const size = 24;
+  const styles: Styles = {};
 
-  setStyles(circle, {
-    'background-color': 'red',
-    width: `${size}px`,
-    height: `${size}px`,
-    'border-radius': `${size / 2}px`,
-  });
+  function updateSize() {
+    const size = settingsSub.settings.get_int('tracker-size');
+    console.log('Size:', size);
 
-  circle.set_translation(-size / 2, -size / 2, 0);
+    styles['width'] = `${size}px`;
+    styles['height'] = `${size}px`;
+    styles['border-radius'] = `${size / 2}px`;
+    setStyles(circle, styles);
+
+    circle.set_translation(-size / 2, -size / 2, 0);
+  }
+  settingsSub.connect('changed::tracker-size', updateSize);
+  updateSize();
+
+  function updateColor() {
+    const hexColor = settingsSub.settings.get_string('tracker-color');
+    console.log('Color:', hexColor);
+    styles['background-color'] = hexColor;
+    setStyles(circle, styles);
+  }
+  settingsSub.connect('changed::tracker-color', updateColor);
+  updateColor();
 
   return circle;
 }

@@ -20,5 +20,17 @@
       <summary>Shape of the tracker</summary>
       <description>Sets the shape or cursor to be used as the tracker shape.</description>
     </key>
+
+    <key name='tracker-size' type='i'>
+      <default>24</default>
+      <summary>Size of the tracker</summary>
+      <description>Sets the size of the tracker element in pixels.</description>
+    </key>
+
+    <key name='tracker-color' type='s'>
+      <default>'#bf4040'</default>
+      <summary>Color of the tracker</summary>
+      <description>Sets the color of the tracker.</description>
+    </key>
   </schema>
 </schemalist>

@@ -4,6 +4,7 @@ import {
   ExtensionPreferences,
   gettext as _,
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import { makeCircleRows } from './circle.js';
 import { makeShapeRow } from './shape.js';
 
 export const TrackerPage = GObject.registerClass(
@@ -21,8 +22,12 @@ export const TrackerPage = GObject.registerClass(
       });
       this.add(appearanceGroup);
 
-      const shapeRow = makeShapeRow(settings);
+      const circleRows = makeCircleRows(settings);
+      const shapeRow = makeShapeRow(settings, circleRows);
       appearanceGroup.add(shapeRow);
+      for (const circleRow of circleRows) {
+        appearanceGroup.add(circleRow);
+      }
     }
   },
 );

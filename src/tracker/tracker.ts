@@ -8,7 +8,7 @@ import { makeCursor } from './cursor.js';
 export function makeTracker(settingsSub: SettingsSubscriber) {
   const tracker = makeWidget();
 
-  const circle = makeCircle();
+  const circle = makeCircle(settingsSub);
   const cursor = makeCursor();
 
   function updateShape() {
