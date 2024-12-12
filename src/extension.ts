@@ -40,13 +40,15 @@ export default class PointerTrackerExtension extends Extension {
       this.MIN_WATCHER_INTERVAL,
       (x: number, y: number) => this.updateTracker(x, y),
     );
+    const [initialX, initialY] = global.get_pointer();
+    this.updateTracker(initialX, initialY);
   }
 
   disable() {
     Main.layoutManager.removeChrome(this.indicator);
     this.indicator.destroy();
 
-    getPointerWatcher().removeWatch(this.pointerListener);
+    this.pointerListener.remove();
   }
 
   updateTracker(x: number, y: number) {
