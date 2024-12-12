@@ -4,6 +4,7 @@ import {
   ExtensionPreferences,
   gettext as _,
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import { makeActiveRow } from './active.js';
 import { makeCircleRows } from './circle.js';
 import { makeShapeRow } from './shape.js';
 
@@ -28,6 +29,14 @@ export const TrackerPage = GObject.registerClass(
       for (const circleRow of circleRows) {
         appearanceGroup.add(circleRow);
       }
+
+      const activeGroup = new Adw.PreferencesGroup({
+        title: _('Active state'),
+      });
+      this.add(activeGroup);
+
+      const activeRow = makeActiveRow(settings);
+      activeGroup.add(activeRow);
     }
   },
 );

@@ -38,5 +38,11 @@
       <summary>Opacity of the tracker</summary>
       <description>Sets the opacity of the tracker from 0 (transparent) to 100 (opaque).</description>
     </key>
+
+    <key name='tracker-active' type='b'>
+      <default>true</default>
+      <summary>Active state of the tracker</summary>
+      <description>Sets the active state of the tracker.</description>
+    </key>
   </schema>
 </schemalist>

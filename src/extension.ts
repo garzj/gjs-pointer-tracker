@@ -11,33 +11,54 @@ export default class PointerTrackerExtension extends Extension {
   settings: Gio.Settings;
   settingsSub: SettingsSubscriber;
 
+  isActive: boolean;
   tracker: St.Widget;
 
   MIN_WATCHER_INTERVAL = 10;
   pointerListener: any;
 
   enable() {
+    this.isActive = false;
+
     this.settings = this.getSettings();
     this.settingsSub = new SettingsSubscriber(this.settings);
 
     this.tracker = makeTracker(this.settingsSub);
-    Main.layoutManager.addTopChrome(this.tracker);
 
-    this.pointerListener = getPointerWatcher().addWatch(
-      this.MIN_WATCHER_INTERVAL,
-      (x: number, y: number) => this.updateTracker(x, y),
-    );
-    const [initialX, initialY] = global.get_pointer();
-    this.updateTracker(initialX, initialY);
+    const onActiveUpdate = () => {
+      const active = this.settings.get_boolean('tracker-active');
+      this.setActive(active);
+    };
+    this.settingsSub.connect('changed::tracker-active', onActiveUpdate);
+    onActiveUpdate();
   }
 
   disable() {
-    Main.layoutManager.removeChrome(this.tracker);
+    this.setActive(false);
+
     this.tracker.destroy();
 
-    this.pointerListener.remove();
-
     this.settingsSub.disconnect();
+  }
+
+  setActive(active: boolean) {
+    if (this.isActive === active) return;
+    this.isActive = active;
+
+    if (active) {
+      Main.layoutManager.addTopChrome(this.tracker);
+
+      this.pointerListener = getPointerWatcher().addWatch(
+        this.MIN_WATCHER_INTERVAL,
+        (x: number, y: number) => this.updateTracker(x, y),
+      );
+      const [initialX, initialY] = global.get_pointer();
+      this.updateTracker(initialX, initialY);
+    } else {
+      Main.layoutManager.removeChrome(this.tracker);
+
+      this.pointerListener.remove();
+    }
   }
 
   updateTracker(x: number, y: number) {
