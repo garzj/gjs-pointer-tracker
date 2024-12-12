@@ -1,8 +1,24 @@
 <!DOCTYPE xml>
 <schemalist gettext-domain='pointer-tracker@garz.dev'>
 
+  <!-- Enums -->
+
+  <enum id='org.gnome.shell.extensions.pointer-tracker.tracker-shape'>
+    <value value='0' nick='circle' />
+    <value value='1' nick='cursor' />
+  </enum>
+
   <!-- Settings -->
 
   <schema id='org.gnome.shell.extensions.pointer-tracker'
-    path='/org/gnome/shell/extensions/pointer-tracker/'></schema>
+    path='/org/gnome/shell/extensions/pointer-tracker/'>
+
+    <!-- Tracker -->
+
+    <key name='tracker-shape' enum='org.gnome.shell.extensions.pointer-tracker.tracker-shape'>
+      <default>'circle'</default>
+      <summary>Shape of the tracker</summary>
+      <description>Sets the shape or cursor to be used as the tracker shape.</description>
+    </key>
+  </schema>
 </schemalist>
