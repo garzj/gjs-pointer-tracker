@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsc && cp -r metadata.json schemas pointer-tracker@garz.dev && glib-compile-schemas pointer-tracker@garz.dev/schemas",
+    "build": "rm -rf pointer-tracker@garz.dev && tsc && cp -r metadata.json schemas pointer-tracker@garz.dev && glib-compile-schemas pointer-tracker@garz.dev/schemas",
     "zip": "yarn build && cd pointer-tracker@garz.dev && zip -r ../pointer-tracker@garz.dev.zip .",
     "disable": "rm -rf ~/.local/share/gnome-shell/extensions/pointer-tracker@garz.dev",
     "enable": "yarn disable && yarn build && cp -r pointer-tracker@garz.dev ~/.local/share/gnome-shell/extensions/",
