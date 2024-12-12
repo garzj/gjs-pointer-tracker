@@ -44,5 +44,11 @@
       <summary>Active state of the tracker</summary>
       <description>Sets the active state of the tracker.</description>
     </key>
+
+    <key name='tracker-keybinding' type='as'>
+      <default><![CDATA[['']]]></default>
+      <summary>Keyboard shortcut for toggling the tracker</summary>
+      <description>Sets the keyboard shortcut that toggles the tracker.</description>
+    </key>
   </schema>
 </schemalist>

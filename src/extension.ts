@@ -1,4 +1,6 @@
 import Gio from 'gi://Gio';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
 import St from 'gi://St';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -31,6 +33,14 @@ export default class PointerTrackerExtension extends Extension {
     };
     this.settingsSub.connect('changed::tracker-active', onActiveUpdate);
     onActiveUpdate();
+
+    Main.wm.addKeybinding(
+      'tracker-keybinding',
+      this.settings,
+      Meta.KeyBindingFlags.NONE,
+      Shell.ActionMode.ALL,
+      () => this.toggleActivePref(),
+    );
   }
 
   disable() {
@@ -39,6 +49,8 @@ export default class PointerTrackerExtension extends Extension {
     this.tracker.destroy();
 
     this.settingsSub.disconnect();
+
+    Main.wm.removeKeybinding('tracker-keybinding');
   }
 
   setActive(active: boolean) {
@@ -59,6 +71,13 @@ export default class PointerTrackerExtension extends Extension {
 
       this.pointerListener.remove();
     }
+  }
+
+  toggleActivePref() {
+    this.settings.set_boolean(
+      'tracker-active',
+      !this.settings.get_boolean('tracker-active'),
+    );
   }
 
   updateTracker(x: number, y: number) {

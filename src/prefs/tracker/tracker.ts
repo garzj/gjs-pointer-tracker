@@ -4,6 +4,7 @@ import {
   ExtensionPreferences,
   gettext as _,
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import { KeybindingRow } from '../keybinding.js';
 import { makeActiveRow } from './active.js';
 import { makeCircleRows } from './circle.js';
 import { makeShapeRow } from './shape.js';
@@ -37,6 +38,19 @@ export const TrackerPage = GObject.registerClass(
 
       const activeRow = makeActiveRow(settings);
       activeGroup.add(activeRow);
+
+      const keybindingGroup = new Adw.PreferencesGroup({
+        title: _('Keybindings'),
+      });
+      this.add(keybindingGroup);
+
+      const keybindRow = new KeybindingRow(
+        settings,
+        'tracker-keybinding',
+        _('Toggle Tracker'),
+      );
+      keybindingGroup.set_header_suffix(keybindRow.resetButton);
+      keybindingGroup.add(keybindRow);
     }
   },
 );
