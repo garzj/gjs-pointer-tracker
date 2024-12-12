@@ -8,7 +8,6 @@ export function makeCircle(settingsSub: SettingsSubscriber) {
 
   function updateSize() {
     const size = settingsSub.settings.get_int('tracker-size');
-    console.log('Size:', size);
 
     styles['width'] = `${size}px`;
     styles['height'] = `${size}px`;
@@ -22,7 +21,6 @@ export function makeCircle(settingsSub: SettingsSubscriber) {
 
   function updateColor() {
     const hexColor = settingsSub.settings.get_string('tracker-color');
-    console.log('Color:', hexColor);
     styles['background-color'] = hexColor;
     setStyles(circle, styles);
   }
