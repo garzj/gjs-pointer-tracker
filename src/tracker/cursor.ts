@@ -28,7 +28,7 @@ export function makeCursor() {
     const scale = shellTracker.get_scale();
     cursor.set_scale(scale, scale);
 
-    const [hotX, hotY] = shellTracker.get_hot();
+    const [hotX, hotY] = shellTracker.get_hot().map((v) => v * scale);
     cursor.set_translation(-hotX, -hotY, 0);
   });
 
