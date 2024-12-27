@@ -12,7 +12,6 @@ export class ScreenSharingNotifier {
   private controller: any;
 
   subscribe(handler: (isSharing: boolean) => void): number | null {
-    console.log('someone subbed');
     if (!Meta.is_wayland_compositor()) {
       console.warn("Not on wayland. Detecting screen sharing won't work.");
       return null;
@@ -47,7 +46,6 @@ export class ScreenSharingNotifier {
   }
 
   unsubscribe(subscriptionId: number) {
-    console.log('someone unsubbed');
     this.controller?.disconnect(subscriptionId);
 
     for (const handlePair of this.handles) {
