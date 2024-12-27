@@ -1,3 +1,4 @@
+import Gio from 'gi://Gio';
 import { makeWidget, setStyles, Styles } from '../gjs/widget.js';
 import { SettingsSubscriber } from '../prefs/SettingsSubscriber.js';
 import { Shape } from './Shape.js';
@@ -7,15 +8,27 @@ export class Circle implements Shape {
 
   private styles: Styles = {};
 
-  constructor(private settingsSub: SettingsSubscriber) {
-    settingsSub.connect('changed::tracker-size', () => this.updateSize());
+  private settingsSub: SettingsSubscriber;
+
+  constructor(settings: Gio.Settings) {
+    this.settingsSub = new SettingsSubscriber(settings);
+
+    this.settingsSub.connect('changed::tracker-size', () => this.updateSize());
     this.updateSize();
 
-    settingsSub.connect('changed::tracker-color', () => this.updateColor());
+    this.settingsSub.connect('changed::tracker-color', () =>
+      this.updateColor(),
+    );
     this.updateColor();
 
-    settingsSub.connect('changed::tracker-opacity', () => this.updateOpacity());
+    this.settingsSub.connect('changed::tracker-opacity', () =>
+      this.updateOpacity(),
+    );
     this.updateOpacity();
+  }
+
+  destroy() {
+    this.settingsSub.disconnect();
   }
 
   updateSize() {

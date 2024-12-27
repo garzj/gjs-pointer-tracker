@@ -1,3 +1,4 @@
+import Gio from 'gi://Gio';
 import { ScreenRecordingNotifier } from './gjs/notifiers/ScreenRecordingNotifier.js';
 import { ScreenSharingNotifier } from './gjs/notifiers/ScreenSharingNotifier.js';
 import { SettingsSubscriber } from './prefs/SettingsSubscriber.js';
@@ -8,8 +9,7 @@ type BooleanKeys<T> = {
 }[keyof T];
 
 export class TrackerManager {
-  isActive = false;
-  tracker: Tracker;
+  private tracker: Tracker;
 
   activePref = false;
 
@@ -23,8 +23,12 @@ export class TrackerManager {
   private isRecording = false;
   private screenRecordingSub: number | null = null;
 
-  constructor(public settingsSub: SettingsSubscriber) {
-    this.tracker = new Tracker(this.settingsSub);
+  private settingsSub: SettingsSubscriber;
+
+  constructor(settings: Gio.Settings) {
+    this.settingsSub = new SettingsSubscriber(settings);
+
+    this.tracker = new Tracker(settings);
 
     this.watchActivePref('activePref', 'tracker-active');
 
@@ -59,6 +63,22 @@ export class TrackerManager {
     this.updateActiveState();
   }
 
+  destroy() {
+    this.settingsSub.disconnect();
+
+    if (this.screenSharingSub !== null) {
+      this.screenSharingNotifier.unsubscribe(this.screenSharingSub);
+      this.screenSharingSub = null;
+    }
+
+    if (this.screenRecordingSub !== null) {
+      this.screenRecordingNotifier.unsubscribe(this.screenRecordingSub);
+      this.screenRecordingSub = null;
+    }
+
+    this.tracker.destroy();
+  }
+
   watchActivePref(key: BooleanKeys<TrackerManager>, prefName: string) {
     this[key] = this.settingsSub.settings.get_boolean(prefName);
     const onActivePrefUpdate = () => {
@@ -74,19 +94,5 @@ export class TrackerManager {
         (this.isSharing && this.screenSharingActivePref) ||
         (this.isRecording && this.screenRecordingActivePref),
     );
-  }
-
-  destroy() {
-    if (this.screenSharingSub !== null) {
-      this.screenSharingNotifier.unsubscribe(this.screenSharingSub);
-      this.screenSharingSub = null;
-    }
-
-    if (this.screenRecordingSub !== null) {
-      this.screenRecordingNotifier.unsubscribe(this.screenRecordingSub);
-      this.screenRecordingSub = null;
-    }
-
-    this.tracker.destroy();
   }
 }
