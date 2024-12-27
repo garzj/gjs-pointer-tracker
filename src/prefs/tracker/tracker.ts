@@ -4,7 +4,7 @@ import {
   ExtensionPreferences,
   gettext as _,
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
-import { KeybindingRow } from '../keybinding.js';
+import { KeybindingRow } from '../KeybindingRow.js';
 import { AboutRow } from './about.js';
 import { makeActiveRows } from './active.js';
 import { makeCircleRows } from './circle.js';

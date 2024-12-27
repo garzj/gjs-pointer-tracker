@@ -1,5 +1,5 @@
 import { makeWidget, setStyles, Styles } from '../gjs/widget.js';
-import { SettingsSubscriber } from '../prefs/subscriber.js';
+import { SettingsSubscriber } from '../prefs/SettingsSubscriber.js';
 import { Shape } from './Shape.js';
 
 export class Circle implements Shape {

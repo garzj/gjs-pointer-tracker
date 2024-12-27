@@ -3,7 +3,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { getPointerWatcher } from 'resource:///org/gnome/shell/ui/pointerWatcher.js';
 import { makeWidget } from '../gjs/widget.js';
 import { TrackerShape } from '../prefs/schema/TrackerShape.js';
-import { SettingsSubscriber } from '../prefs/subscriber.js';
+import { SettingsSubscriber } from '../prefs/SettingsSubscriber.js';
 import { exhausted } from '../ts/exhausted.js';
 import { Circle } from './Circle.js';
 import { Cursor } from './Cursor.js';

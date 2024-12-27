@@ -1,6 +1,6 @@
 import { ScreenRecordingNotifier } from './gjs/notifiers/ScreenRecordingNotifier.js';
 import { ScreenSharingNotifier } from './gjs/notifiers/ScreenSharingNotifier.js';
-import { SettingsSubscriber } from './prefs/subscriber.js';
+import { SettingsSubscriber } from './prefs/SettingsSubscriber.js';
 import { Tracker } from './tracker/Tracker.js';
 
 type BooleanKeys<T> = {

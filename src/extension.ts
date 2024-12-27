@@ -1,7 +1,7 @@
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 // @ts-ignore
 import { KeybindsManager } from './KeybindsManager.js';
-import { SettingsSubscriber } from './prefs/subscriber.js';
+import { SettingsSubscriber } from './prefs/SettingsSubscriber.js';
 import { TrackerManager } from './TrackerManager.js';
 
 export default class PointerTrackerExtension extends Extension {
