@@ -4,7 +4,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 // @ts-ignore
 import { getPointerWatcher } from 'resource:///org/gnome/shell/ui/pointerWatcher.js';
 import { SettingsSubscriber } from './prefs/subscriber.js';
-import { Tracker } from './tracker/tracker.js';
+import { Tracker } from './tracker/Tracker.js';
 
 export class TrackerManager {
   isActive = false;

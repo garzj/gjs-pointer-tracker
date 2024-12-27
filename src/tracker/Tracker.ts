@@ -2,8 +2,8 @@ import { makeWidget } from '../gjs/widget.js';
 import { TrackerShape } from '../prefs/schema/TrackerShape.js';
 import { SettingsSubscriber } from '../prefs/subscriber.js';
 import { exhausted } from '../ts/exhausted.js';
-import { Circle } from './circle.js';
-import { Cursor } from './cursor.js';
+import { Circle } from './Circle.js';
+import { Cursor } from './Cursor.js';
 
 export class Tracker {
   widget = makeWidget();
