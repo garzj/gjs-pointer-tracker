@@ -40,9 +40,22 @@
     </key>
 
     <key name='tracker-active' type='b'>
-      <default>true</default>
+      <default>false</default>
       <summary>Active state of the tracker</summary>
       <description>Sets the active state of the tracker.</description>
+    </key>
+
+    <key name='tracker-always-on-screen-sharing' type='b'>
+      <default>true</default>
+      <summary>Always show the tracker while screen sharing (only on Wayland)</summary>
+      <description>Determines whether the tracker should always be shown while screen sharing. (This
+        feature is only available on Wayland.)</description>
+    </key>
+
+    <key name='tracker-always-on-screen-recording' type='b'>
+      <default>true</default>
+      <summary>Always show the tracker while screen recording</summary>
+      <description>Determines whether the tracker should always be shown while screen recording.</description>
     </key>
 
     <key name='tracker-keybinding' type='as'>

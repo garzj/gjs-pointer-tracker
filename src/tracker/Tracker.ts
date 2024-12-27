@@ -1,3 +1,6 @@
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+// @ts-ignore
+import { getPointerWatcher } from 'resource:///org/gnome/shell/ui/pointerWatcher.js';
 import { makeWidget } from '../gjs/widget.js';
 import { TrackerShape } from '../prefs/schema/TrackerShape.js';
 import { SettingsSubscriber } from '../prefs/subscriber.js';
@@ -6,10 +9,14 @@ import { Circle } from './Circle.js';
 import { Cursor } from './Cursor.js';
 
 export class Tracker {
-  widget = makeWidget();
+  private isActive = false;
 
-  circle: Circle;
-  cursor: Cursor;
+  private MIN_WATCHER_INTERVAL = 10;
+  private pointerListener: Record<any, any> | null = null;
+
+  private widget = makeWidget();
+  private circle: Circle;
+  private cursor: Cursor;
 
   constructor(private settingsSub: SettingsSubscriber) {
     this.circle = new Circle(settingsSub);
@@ -20,7 +27,29 @@ export class Tracker {
   }
 
   destroy() {
+    this.setActive(false);
     this.widget.destroy();
+  }
+
+  setActive(active: boolean) {
+    if (this.isActive === active) return;
+    this.isActive = active;
+
+    if (active) {
+      Main.layoutManager.addTopChrome(this.widget);
+
+      this.pointerListener = getPointerWatcher().addWatch(
+        this.MIN_WATCHER_INTERVAL,
+        (x: number, y: number) => this.widget.set_position(x, y),
+      );
+      const [initialX, initialY] = global.get_pointer();
+      this.widget.set_position(initialX, initialY);
+    } else {
+      Main.layoutManager.removeChrome(this.widget);
+
+      this.pointerListener?.remove();
+      this.pointerListener = null;
+    }
   }
 
   updateShape() {

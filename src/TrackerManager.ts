@@ -1,74 +1,92 @@
-import Meta from 'gi://Meta';
-import Shell from 'gi://Shell';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-// @ts-ignore
-import { getPointerWatcher } from 'resource:///org/gnome/shell/ui/pointerWatcher.js';
+import { ScreenRecordingNotifier } from './gjs/notifiers/ScreenRecordingNotifier.js';
+import { ScreenSharingNotifier } from './gjs/notifiers/ScreenSharingNotifier.js';
 import { SettingsSubscriber } from './prefs/subscriber.js';
 import { Tracker } from './tracker/Tracker.js';
+
+type BooleanKeys<T> = {
+  [K in keyof T]: T[K] extends boolean ? K : never;
+}[keyof T];
 
 export class TrackerManager {
   isActive = false;
   tracker: Tracker;
 
-  MIN_WATCHER_INTERVAL = 10;
-  pointerListener: Record<any, any> | null = null;
+  activePref = false;
+
+  screenSharingActivePref = false;
+  private screenSharingNotifier = new ScreenSharingNotifier();
+  private isSharing = false;
+  private screenSharingSub: number | null = null;
+
+  screenRecordingActivePref = false;
+  private screenRecordingNotifier = new ScreenRecordingNotifier();
+  private isRecording = false;
+  private screenRecordingSub: number | null = null;
 
   constructor(public settingsSub: SettingsSubscriber) {
     this.tracker = new Tracker(this.settingsSub);
 
-    const onActiveUpdate = () => {
-      const active = this.settingsSub.settings.get_boolean('tracker-active');
-      this.setActive(active);
-    };
-    this.settingsSub.connect('changed::tracker-active', onActiveUpdate);
-    onActiveUpdate();
+    this.watchActivePref('activePref', 'tracker-active');
 
-    Main.wm.addKeybinding(
-      'tracker-keybinding',
-      this.settingsSub.settings,
-      Meta.KeyBindingFlags.NONE,
-      Shell.ActionMode.ALL,
-      () => this.toggleActivePref(),
+    this.watchActivePref(
+      'screenSharingActivePref',
+      'tracker-always-on-screen-sharing',
+    );
+    this.screenSharingSub = this.screenSharingNotifier.subscribe(
+      (isSharing) => {
+        this.isSharing = isSharing;
+        this.updateActiveState();
+      },
+    );
+    if (this.screenSharingSub === null) {
+      console.warn('Failed to subscribe to screensharing events.');
+    }
+
+    this.watchActivePref(
+      'screenRecordingActivePref',
+      'tracker-always-on-screen-recording',
+    );
+    this.screenRecordingSub = this.screenRecordingNotifier.subscribe(
+      (isSharing) => {
+        this.isSharing = isSharing;
+        this.updateActiveState();
+      },
+    );
+    if (this.screenRecordingSub === null) {
+      console.warn('Failed to subscribe to screensharing events.');
+    }
+
+    this.updateActiveState();
+  }
+
+  watchActivePref(key: BooleanKeys<TrackerManager>, prefName: string) {
+    this[key] = this.settingsSub.settings.get_boolean(prefName);
+    const onActivePrefUpdate = () => {
+      this[key] = this.settingsSub.settings.get_boolean(prefName);
+      this.updateActiveState();
+    };
+    this.settingsSub.connect(`changed::${prefName}`, onActivePrefUpdate);
+  }
+
+  updateActiveState() {
+    this.tracker.setActive(
+      this.activePref ||
+        (this.isSharing && this.screenSharingActivePref) ||
+        (this.isRecording && this.screenRecordingActivePref),
     );
   }
 
   destroy() {
-    Main.wm.removeKeybinding('tracker-keybinding');
+    if (this.screenSharingSub !== null) {
+      this.screenSharingNotifier.unsubscribe(this.screenSharingSub);
+      this.screenSharingSub = null;
+    }
 
-    this.setActive(false);
+    if (this.screenRecordingSub !== null) {
+      this.screenRecordingNotifier.unsubscribe(this.screenRecordingSub);
+      this.screenRecordingSub = null;
+    }
 
     this.tracker.destroy();
-  }
-
-  setActive(active: boolean) {
-    if (this.isActive === active) return;
-    this.isActive = active;
-
-    if (active) {
-      Main.layoutManager.addTopChrome(this.tracker.widget);
-
-      this.pointerListener = getPointerWatcher().addWatch(
-        this.MIN_WATCHER_INTERVAL,
-        (x: number, y: number) => this.updateTracker(x, y),
-      );
-      const [initialX, initialY] = global.get_pointer();
-      this.updateTracker(initialX, initialY);
-    } else {
-      Main.layoutManager.removeChrome(this.tracker.widget);
-
-      this.pointerListener?.remove();
-      this.pointerListener = null;
-    }
-  }
-
-  toggleActivePref() {
-    this.settingsSub.settings.set_boolean(
-      'tracker-active',
-      !this.settingsSub.settings.get_boolean('tracker-active'),
-    );
-  }
-
-  updateTracker(x: number, y: number) {
-    this.tracker.widget.set_position(x, y);
   }
 }

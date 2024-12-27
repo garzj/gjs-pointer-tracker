@@ -1,23 +1,29 @@
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 // @ts-ignore
+import { KeybindsManager } from './KeybindsManager.js';
 import { SettingsSubscriber } from './prefs/subscriber.js';
 import { TrackerManager } from './TrackerManager.js';
 
 export default class PointerTrackerExtension extends Extension {
   settingsSub: SettingsSubscriber | null = null;
 
-  manager: TrackerManager | null = null;
+  tracker: TrackerManager | null = null;
+  keybinds: KeybindsManager | null = null;
 
   enable() {
     const settings = this.getSettings();
     this.settingsSub = new SettingsSubscriber(settings);
 
-    this.manager = new TrackerManager(this.settingsSub);
+    this.tracker = new TrackerManager(this.settingsSub);
+    this.keybinds = new KeybindsManager(settings);
   }
 
   disable() {
-    this.manager?.destroy();
-    this.manager = null;
+    this.tracker?.destroy();
+    this.tracker = null;
+
+    this.keybinds?.destroy();
+    this.keybinds = null;
 
     this.settingsSub?.disconnect();
     this.settingsSub = null;

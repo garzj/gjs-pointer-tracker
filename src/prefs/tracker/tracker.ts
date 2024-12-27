@@ -6,7 +6,7 @@ import {
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { KeybindingRow } from '../keybinding.js';
 import { AboutRow } from './about.js';
-import { makeActiveRow } from './active.js';
+import { makeActiveRows } from './active.js';
 import { makeCircleRows } from './circle.js';
 import { makeShapeRow } from './shape.js';
 
@@ -37,8 +37,10 @@ export const TrackerPage = GObject.registerClass(
       });
       this.add(activeGroup);
 
-      const activeRow = makeActiveRow(settings);
-      activeGroup.add(activeRow);
+      const activeRows = makeActiveRows(settings);
+      for (const activeRow of activeRows) {
+        activeGroup.add(activeRow);
+      }
 
       const keybindingGroup = new Adw.PreferencesGroup({
         title: _('Keybindings'),
