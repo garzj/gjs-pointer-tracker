@@ -1,21 +1,20 @@
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
-import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 // @ts-ignore
 import { getPointerWatcher } from 'resource:///org/gnome/shell/ui/pointerWatcher.js';
 import { SettingsSubscriber } from './prefs/subscriber.js';
-import { makeTracker } from './tracker/tracker.js';
+import { Tracker } from './tracker/tracker.js';
 
 export class TrackerManager {
   isActive = false;
-  tracker: St.Widget;
+  tracker: Tracker;
 
   MIN_WATCHER_INTERVAL = 10;
   pointerListener: Record<any, any> | null = null;
 
   constructor(public settingsSub: SettingsSubscriber) {
-    this.tracker = makeTracker(this.settingsSub);
+    this.tracker = new Tracker(this.settingsSub);
 
     const onActiveUpdate = () => {
       const active = this.settingsSub.settings.get_boolean('tracker-active');
@@ -46,7 +45,7 @@ export class TrackerManager {
     this.isActive = active;
 
     if (active) {
-      Main.layoutManager.addTopChrome(this.tracker);
+      Main.layoutManager.addTopChrome(this.tracker.widget);
 
       this.pointerListener = getPointerWatcher().addWatch(
         this.MIN_WATCHER_INTERVAL,
@@ -55,7 +54,7 @@ export class TrackerManager {
       const [initialX, initialY] = global.get_pointer();
       this.updateTracker(initialX, initialY);
     } else {
-      Main.layoutManager.removeChrome(this.tracker);
+      Main.layoutManager.removeChrome(this.tracker.widget);
 
       this.pointerListener?.remove();
       this.pointerListener = null;
@@ -70,6 +69,6 @@ export class TrackerManager {
   }
 
   updateTracker(x: number, y: number) {
-    this.tracker.set_position(x, y);
+    this.tracker.widget.set_position(x, y);
   }
 }

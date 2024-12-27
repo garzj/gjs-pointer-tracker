@@ -2,35 +2,37 @@ import Clutter from 'gi://Clutter';
 import Meta from 'gi://Meta';
 import Mtk from 'gi://Mtk';
 import { makeWidget, setStyles } from '../gjs/widget.js';
+import { Shape } from './Shape.js';
 
-export function makeCursor() {
-  const cursor = makeWidget();
+export class Cursor implements Shape {
+  widget = makeWidget();
 
-  const shellTracker = Meta.CursorTracker.get_for_display(global.display);
-  shellTracker.connect('cursor-changed', () => {
-    const texture = shellTracker.get_sprite();
-    if (!shellTracker.get_pointer_visible() || !texture) {
-      cursor.hide();
-      return;
-    }
-    cursor.show();
+  private shellTracker = Meta.CursorTracker.get_for_display(global.display);
 
-    const [width, height] = [texture.get_width(), texture.get_height()];
-    const clip = new Mtk.Rectangle({ x: 0, y: 0, width, height });
-    const content = Clutter.TextureContent.new_from_texture(texture, clip);
-    cursor.set_content(content);
+  constructor() {
+    this.shellTracker.connect('cursor-changed', () => {
+      const texture = this.shellTracker.get_sprite();
+      if (!this.shellTracker.get_pointer_visible() || !texture) {
+        this.widget.hide();
+        return;
+      }
+      this.widget.show();
 
-    setStyles(cursor, {
-      width: `${width}px`,
-      height: `${height}px`,
+      const [width, height] = [texture.get_width(), texture.get_height()];
+      const clip = new Mtk.Rectangle({ x: 0, y: 0, width, height });
+      const content = Clutter.TextureContent.new_from_texture(texture, clip);
+      this.widget.set_content(content);
+
+      setStyles(this.widget, {
+        width: `${width}px`,
+        height: `${height}px`,
+      });
+
+      const scale = this.shellTracker.get_scale();
+      this.widget.set_scale(scale, scale);
+
+      const [hotX, hotY] = this.shellTracker.get_hot().map((v) => v * scale);
+      this.widget.set_translation(-hotX, -hotY, 0);
     });
-
-    const scale = shellTracker.get_scale();
-    cursor.set_scale(scale, scale);
-
-    const [hotX, hotY] = shellTracker.get_hot().map((v) => v * scale);
-    cursor.set_translation(-hotX, -hotY, 0);
-  });
-
-  return cursor;
+  }
 }

@@ -2,31 +2,40 @@ import { makeWidget } from '../gjs/widget.js';
 import { TrackerShape } from '../prefs/schema/TrackerShape.js';
 import { SettingsSubscriber } from '../prefs/subscriber.js';
 import { exhausted } from '../ts/exhausted.js';
-import { makeCircle } from './circle.js';
-import { makeCursor } from './cursor.js';
+import { Circle } from './circle.js';
+import { Cursor } from './cursor.js';
 
-export function makeTracker(settingsSub: SettingsSubscriber) {
-  const tracker = makeWidget();
+export class Tracker {
+  widget = makeWidget();
 
-  const circle = makeCircle(settingsSub);
-  const cursor = makeCursor();
+  circle: Circle;
+  cursor: Cursor;
 
-  function updateShape() {
-    const shape: TrackerShape = settingsSub.settings.get_enum('tracker-shape');
-    tracker.remove_all_children();
+  constructor(private settingsSub: SettingsSubscriber) {
+    this.circle = new Circle(settingsSub);
+    this.cursor = new Cursor();
+
+    settingsSub.connect('changed::tracker-shape', () => this.updateShape());
+    this.updateShape();
+  }
+
+  destroy() {
+    this.widget.destroy();
+  }
+
+  updateShape() {
+    const shape: TrackerShape =
+      this.settingsSub.settings.get_enum('tracker-shape');
+    this.widget.remove_all_children();
     switch (shape) {
       case TrackerShape.CIRCLE:
-        tracker.add_child(circle);
+        this.widget.add_child(this.circle.widget);
         break;
       case TrackerShape.CURSOR:
-        tracker.add_child(cursor);
+        this.widget.add_child(this.cursor.widget);
         break;
       default:
         exhausted(shape);
     }
   }
-  settingsSub.connect('changed::tracker-shape', updateShape);
-  updateShape();
-
-  return tracker;
 }

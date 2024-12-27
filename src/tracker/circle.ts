@@ -1,38 +1,42 @@
 import { makeWidget, setStyles, Styles } from '../gjs/widget.js';
 import { SettingsSubscriber } from '../prefs/subscriber.js';
+import { Shape } from './Shape.js';
 
-export function makeCircle(settingsSub: SettingsSubscriber) {
-  const circle = makeWidget();
+export class Circle implements Shape {
+  widget = makeWidget();
 
-  const styles: Styles = {};
+  private styles: Styles = {};
 
-  function updateSize() {
-    const size = settingsSub.settings.get_int('tracker-size');
+  constructor(private settingsSub: SettingsSubscriber) {
+    settingsSub.connect('changed::tracker-size', () => this.updateSize());
+    this.updateSize();
 
-    styles['width'] = `${size}px`;
-    styles['height'] = `${size}px`;
-    styles['border-radius'] = `${size / 2}px`;
-    setStyles(circle, styles);
+    settingsSub.connect('changed::tracker-color', () => this.updateColor());
+    this.updateColor();
 
-    circle.set_translation(-size / 2, -size / 2, 0);
+    settingsSub.connect('changed::tracker-opacity', () => this.updateOpacity());
+    this.updateOpacity();
   }
-  settingsSub.connect('changed::tracker-size', updateSize);
-  updateSize();
 
-  function updateColor() {
-    const hexColor = settingsSub.settings.get_string('tracker-color');
-    styles['background-color'] = hexColor;
-    setStyles(circle, styles);
+  updateSize() {
+    const size = this.settingsSub.settings.get_int('tracker-size');
+
+    this.styles['width'] = `${size}px`;
+    this.styles['height'] = `${size}px`;
+    this.styles['border-radius'] = `${size / 2}px`;
+    setStyles(this.widget, this.styles);
+
+    this.widget.set_translation(-size / 2, -size / 2, 0);
   }
-  settingsSub.connect('changed::tracker-color', updateColor);
-  updateColor();
 
-  function updateOpacity() {
-    const opacitySetting = settingsSub.settings.get_int('tracker-opacity');
-    circle.opacity = Math.ceil(opacitySetting * 2.55);
+  updateColor() {
+    const hexColor = this.settingsSub.settings.get_string('tracker-color');
+    this.styles['background-color'] = hexColor;
+    setStyles(this.widget, this.styles);
   }
-  settingsSub.connect('changed::tracker-opacity', updateOpacity);
-  updateOpacity();
 
-  return circle;
+  updateOpacity() {
+    const opacitySetting = this.settingsSub.settings.get_int('tracker-opacity');
+    this.widget.opacity = Math.ceil(opacitySetting * 2.55);
+  }
 }
