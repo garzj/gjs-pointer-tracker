@@ -13,6 +13,8 @@ import { Shape } from './Shape.js';
 export class Tracker {
   private isActive = false;
 
+  private raiseSignalId: number | null = null;
+
   private MIN_WATCHER_INTERVAL = 10;
   private pointerListener: Record<any, any> | null = null;
 
@@ -33,6 +35,11 @@ export class Tracker {
   destroy() {
     this.settingsSub.disconnect();
 
+    if (this.raiseSignalId !== null) {
+      Main.layoutManager.uiGroup.disconnect(this.raiseSignalId);
+      this.raiseSignalId = null;
+    }
+
     this.shape?.destroy();
 
     this.setActive(false);
@@ -43,21 +50,37 @@ export class Tracker {
     if (this.isActive === active) return;
     this.isActive = active;
 
+    if (this.raiseSignalId !== null) {
+      Main.layoutManager.uiGroup.disconnect(this.raiseSignalId);
+      this.raiseSignalId = null;
+    }
+
     if (active) {
-      Main.layoutManager.addTopChrome(this.widget);
+      Main.layoutManager.uiGroup.add_child(this.widget);
 
       this.pointerListener = getPointerWatcher().addWatch(
         this.MIN_WATCHER_INTERVAL,
-        (x: number, y: number) => this.widget.set_position(x, y),
+        (x: number, y: number) => this.updatePosition(x, y),
       );
       const [initialX, initialY] = global.get_pointer();
-      this.widget.set_position(initialX, initialY);
+      this.updatePosition(initialX, initialY);
     } else {
-      Main.layoutManager.removeChrome(this.widget);
+      Main.layoutManager.uiGroup.remove_child(this.widget);
 
       this.pointerListener?.remove();
       this.pointerListener = null;
     }
+  }
+
+  updatePosition(x: number, y: number) {
+    this.raiseToTop();
+    this.widget.set_position(x, y);
+  }
+
+  raiseToTop() {
+    const parent = this.widget.get_parent();
+    if (!parent) return;
+    parent.set_child_above_sibling(this.widget, null);
   }
 
   updateShape() {
