@@ -52,7 +52,10 @@ export class Cursor implements Shape {
       height: `${height}px`,
     });
 
-    const scale = this.shellTracker.get_scale();
+    // const scale = this.shellTracker.get_scale();
+    const scale =
+      1 /
+      global.display.get_monitor_scale(global.display.get_current_monitor());
     this.widget.set_scale(scale, scale);
 
     const [hotX, hotY] = this.shellTracker.get_hot().map((v) => v * scale);
