@@ -13,8 +13,6 @@ import { Shape } from './Shape.js';
 export class Tracker {
   private isActive = false;
 
-  private raiseSignalId: number | null = null;
-
   private MIN_WATCHER_INTERVAL = 10;
   private pointerListener: Record<any, any> | null = null;
 
@@ -35,11 +33,6 @@ export class Tracker {
   destroy() {
     this.settingsSub.disconnect();
 
-    if (this.raiseSignalId !== null) {
-      Main.layoutManager.uiGroup.disconnect(this.raiseSignalId);
-      this.raiseSignalId = null;
-    }
-
     this.shape?.destroy();
 
     this.setActive(false);
@@ -49,11 +42,6 @@ export class Tracker {
   setActive(active: boolean) {
     if (this.isActive === active) return;
     this.isActive = active;
-
-    if (this.raiseSignalId !== null) {
-      Main.layoutManager.uiGroup.disconnect(this.raiseSignalId);
-      this.raiseSignalId = null;
-    }
 
     if (active) {
       Main.layoutManager.uiGroup.add_child(this.widget);
