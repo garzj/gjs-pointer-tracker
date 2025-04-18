@@ -1,6 +1,6 @@
 {
   "name": "Pointer Tracker",
-  "version-name": "1.1.1",
+  "version-name": "1.1.2",
   "description": "Highlight the mouse cursor to make it visible on screencasts",
   "url": "https://github.com/garzj/gjs-pointer-tracker",
   "uuid": "pointer-tracker@garz.dev",
