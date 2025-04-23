@@ -7,14 +7,21 @@ export class Cursor implements Shape {
   widget = makeWidget();
 
   private shellTracker = global.backend.get_cursor_tracker();
+  private subscriptions: number[] = [];
 
   constructor() {
-    this.shellTracker.connect('visibility-changed', () => this.update());
+    this.subscriptions.push(
+      this.shellTracker.connect('visibility-changed', () => this.update()),
+    );
 
-    this.shellTracker.connect('cursor-changed', () => this.update());
+    this.subscriptions.push(
+      this.shellTracker.connect('cursor-changed', () => this.update()),
+    );
   }
 
-  destroy() {}
+  destroy() {
+    this.subscriptions.forEach((s) => this.shellTracker.disconnect(s));
+  }
 
   private update() {
     const texture = this.shellTracker.get_sprite();
