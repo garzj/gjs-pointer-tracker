@@ -9,8 +9,7 @@ export default [
     ignores: [
       'pointer-tracker@garz.dev/**/*',
       'eslint.config.js',
-      'eslint.cli.config.js',
-      '.vscode/eslint-vsc.config.js',
+      'eslint-cli.config.js',
     ],
     languageOptions: {
       parser: tsParser,
