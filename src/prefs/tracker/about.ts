@@ -1,4 +1,4 @@
-import { ExtensionMetadata } from '@girs/gnome-shell/extensions/extension';
+import { Extension } from '@girs/gnome-shell/extensions/extension';
 import Adw from 'gi://Adw';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
@@ -15,7 +15,7 @@ const issueUrl = 'https://github.com/garzj/gjs-pointer-tracker/issues/';
 
 export const AboutRow = GObject.registerClass(
   class AboutRow extends Adw.ActionRow {
-    constructor(metadata: ExtensionMetadata) {
+    constructor(metadata: Extension['metadata']) {
       super({
         title: _('About'),
         subtitle: _('Extension information'),

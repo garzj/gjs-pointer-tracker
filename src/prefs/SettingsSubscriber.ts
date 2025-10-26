@@ -5,8 +5,11 @@ export class SettingsSubscriber {
 
   constructor(public settings: Gio.Settings) {}
 
-  connect: Gio.Settings['connect'] = (id, callback, ...args) => {
-    const connectionId = this.settings.connect(id, callback, ...args);
+  connect: Gio.Settings['connect'] = (
+    signal: string,
+    callback: (...args: unknown[]) => void,
+  ): number => {
+    const connectionId = this.settings.connect(signal, callback);
     this.connections.push(connectionId);
     return connectionId;
   };
