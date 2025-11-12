@@ -14,7 +14,9 @@ export class Cursor implements Shape {
     if (global.backend?.get_cursor_tracker) {
       this.shellTracker = global.backend.get_cursor_tracker();
     } else {
-      this.shellTracker = (Meta.CursorTracker as any).get_for_display(global.display);
+      this.shellTracker = (Meta.CursorTracker as any).get_for_display(
+        global.display,
+      );
     }
 
     this.subscriptions.push(
