@@ -16,19 +16,19 @@
   },
   "sideEffects": "false",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@typescript-eslint/parser": "^8.46.2",
-    "eslint": "^9.38.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prettier": "^5.5.4",
-    "npm-check-updates": "^19.1.1",
+    "npm-check-updates": "^19.1.2",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@girs/gjs": "^4.0.0-beta.38",
-    "@girs/gnome-shell": "^49.0.3"
+    "@girs/gnome-shell": "^49.1.0"
   }
 }
