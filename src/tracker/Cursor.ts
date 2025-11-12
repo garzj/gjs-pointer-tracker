@@ -7,10 +7,16 @@ import { Shape } from './Shape.js';
 export class Cursor implements Shape {
   widget = makeWidget();
 
-  private shellTracker = global.backend.get_cursor_tracker();
+  private shellTracker: Meta.CursorTracker;
   private subscriptions: number[] = [];
 
   constructor() {
+    if (global.backend?.get_cursor_tracker) {
+      this.shellTracker = global.backend.get_cursor_tracker();
+    } else {
+      this.shellTracker = (Meta.CursorTracker as any).get_for_display(global.display);
+    }
+
     this.subscriptions.push(
       this.shellTracker.connect('visibility-changed', () => this.update()),
     );
