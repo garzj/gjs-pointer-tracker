@@ -1,4 +1,4 @@
-import Meta from 'gi://Meta';
+import { isWayland } from '../wayland.js';
 
 interface Handle {
   is_recording: boolean;
@@ -12,7 +12,7 @@ export class ScreenSharingNotifier {
   private controller: any;
 
   subscribe(handler: (isSharing: boolean) => void): number | null {
-    if (!Meta.is_wayland_compositor()) {
+    if (isWayland()) {
       console.warn("Not on wayland. Detecting screen sharing won't work.");
       return null;
     }

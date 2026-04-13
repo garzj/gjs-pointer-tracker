@@ -1,6 +1,7 @@
 import Clutter from 'gi://Clutter';
 import Meta from 'gi://Meta';
 import Mtk from 'gi://Mtk';
+import { isWayland } from '../gjs/wayland.js';
 import { makeWidget, setStyles } from '../gjs/widget.js';
 import { Shape } from './Shape.js';
 
@@ -56,7 +57,7 @@ export class Cursor implements Shape {
       global.display.get_monitor_scale(global.display.get_current_monitor());
     this.widget.set_scale(scale, scale);
 
-    const hotScale = Meta.is_wayland_compositor() ? scale : 1;
+    const hotScale = isWayland() ? scale : 1;
     const [hotX, hotY] = this.shellTracker.get_hot().map((v) => v * hotScale);
     this.widget.set_translation(-hotX, -hotY, 0);
   }

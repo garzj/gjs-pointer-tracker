@@ -1,5 +1,5 @@
 import Gio from 'gi://Gio';
-import Meta from 'gi://Meta';
+import { isWayland } from '../gjs/wayland.js';
 import { makeWidget, setStyles, Styles } from '../gjs/widget.js';
 import { SettingsSubscriber } from '../prefs/SettingsSubscriber.js';
 import { Shape } from './Shape.js';
@@ -40,7 +40,7 @@ export class Circle implements Shape {
     this.styles['border-radius'] = `${size / 2}px`;
     setStyles(this.widget, this.styles);
 
-    const alignScale = Meta.is_wayland_compositor() ? 2 : 1;
+    const alignScale = isWayland() ? 2 : 1;
     this.widget.set_translation(-size / alignScale, -size / alignScale, 0);
   }
 
